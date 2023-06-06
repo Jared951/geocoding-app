@@ -22,8 +22,8 @@ for address in addresses:
     # Check if geocoding was successful and location object is not None
     if location is not None:
         # Retrieve latitude and longitude from the location object
-        latitude = location.latitude
-        longitude = location.longitude
+        latitude = location.latitude # type: ignore
+        longitude = location.longitude # type: ignore
         
         # Append coordinates to the geocoded_data list
         geocoded_data.append((latitude, longitude))
