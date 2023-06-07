@@ -16,8 +16,8 @@ model.connect_to_db(app)
 with app.app_context():
     model.db.create_all()
 
-    new_user_1 = model.User(email="jack@example.com", password="test", id=1)
-    new_user_2 = model.User(email="hankhill@example.com", password="propane", id=2)
+    new_user_1 = model.User(email="jack@example.com", password="test")
+    new_user_2 = model.User(email="hankhill@example.com", password="propane")
 
     model.db.session.add_all([new_user_1, new_user_2])
     model.db.session.commit()

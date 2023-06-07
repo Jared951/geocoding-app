@@ -15,7 +15,13 @@ class User(db.Model):
     password = db.Column(db.String(255))
 
     # Relationship with the 'brands' table
-    brands = db.relationship("Brand", backref="user")
+    brands = db.relationship("Brand", backref="user", lazy=False)
+
+    # Constructor method for initializing the user attributes.
+    def __init__ (self, email, password):
+        self.email = email
+        self.password = password
+
 
 
 
@@ -30,7 +36,13 @@ class Brand(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
     # Relationship with the 'addresses' table
-    addresses = db.relationship("Address", backref="brand")
+    addresses = db.relationship("Address", backref="brand", lazy=False)
+
+    # Constructor method for initializing the brand attributes.
+    def __init__(self, brand_name, user_id):
+        self.brand_name = brand_name
+        self.user_id = user_id
+
 
 
 
@@ -45,6 +57,13 @@ class Address(db.Model):
     latitude = db.Column(db.Float())
     longitude = db.Column(db.Float())
     brand_id = db.Column(db.Integer, db.ForeignKey("brands.id"))
+
+    # Constructor method for initializing the address attributes.
+    def __init__(self, address_name, latitude, longitude, brand_id):
+        self.address_name = address_name
+        self.latitude = latitude
+        self.longitude = longitude
+        self.brand_id = brand_id
 
 
 
