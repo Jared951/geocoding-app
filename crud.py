@@ -1,4 +1,5 @@
 from model import db, User, Brand, Address
+# from geocoding import geocode_address
 
 def create_user(email, password):
     user = User(email=email, password=password)
@@ -12,13 +13,24 @@ def create_brand(brand_name, user_id):
     db.session.commit()
     return brand
 
-def create_address(brand_id, address_name, latitude, longitude):
-    address = Address(address_name=address_name, brand_id=brand_id, latitude=0, longitude=0)
+"""
+def create_address(brand_id, address_name):
+    geocoordinating = geocode_address(address_name)
+    latitude = geocoordinating[0]
+    longitude = geocoordinating[1]
+    address = Address(address_name=address_name, brand_id=brand_id, latitude=latitude, longitude=longitude)
+    db.session.add(address)
+    db.session.commit()
+    return address
+"""
+
+def create_address(brand_id, address_name, latitude=0.0, longitude=0.0):
+    address = Address(address_name=address_name, brand_id=brand_id, latitude=latitude, longitude=longitude)
     db.session.add(address)
     db.session.commit()
     return address
 
-def delete_brand(brand_id):
+def remove_brand(brand_id):
     brand = Brand.query.get(brand_id)
     if brand:
         db.session.delete(brand)
@@ -34,10 +46,10 @@ def delete_address(address_id):
         return True
     return False
 
-def update_address(address_id, address_name):
+def update_address(address_id, new_address):
     address = Address.query.get(address_id)
     if address:
-        address.address_name = address_name
+        address.address_name = new_address
         db.session.commit()
         return True
     return False

@@ -7,22 +7,30 @@
     <title>Profile</title>
 </head>
 <body>
-    <h1>View All Brands and Addresses</h1>
-    
-    <table>
-      <tr>
-        <th>Brand</th>
-        <th>Address</th>
-        <th>Actions</th>
-        <button>Delete Address</button>
-        <button>Delete Brand</button>
-        <input>Update Address</input>
-    </tr>
-     
-    </table>
-    
-    <br>
-    
-    <button>This Button will take all addresses under a brand convert them to a csv and then download them</button>
-  </body>
+  <h1>View All Brands and Addresses</h1>
+  <a href="{{ url_for('logout') }}">Logout</a>
+  <a href="{{ url_for('add_brand') }}">Add Brand</a>
+
+  {% for brand in brands %}
+    <div>
+      <h3>{{ brand.brand_name }}</h3>
+      <form method="post" action="{{ url_for('delete_brand', brand_id=brand.id) }}">
+        <input type="submit" value="Delete">
+      </form>
+    </div>  
+
+    <div>
+      <h4>Addresses:</h4>
+      <ul>
+        {% for address in brand.addresses %}
+          <li>{{ address.address_name }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+
+  
+
+  <button>This Button will take all addresses under a brand convert them to a CSV and then download them. However, the lat/lon will not appear on the page; it is only for downloading purposes.</button>
+</body>
 </html>

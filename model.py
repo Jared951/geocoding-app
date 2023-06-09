@@ -1,11 +1,12 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 # Create an instance of SQLAlchemy
 db = SQLAlchemy()
 
 # User model for creating the 'users' table
-class User(db.Model):
+class User(db.Model, UserMixin):
     # Set the table name
     __tablename__ = "users"
 
@@ -22,6 +23,9 @@ class User(db.Model):
         self.email = email
         self.password = password
 
+    # Check password
+    def check_password(self, password):
+        return self.password == password
 
 
 
@@ -89,5 +93,4 @@ if __name__ == "__main__":
 
     # Connect the app to the database
     connect_to_db(app)
-
     print("Connected to db...")
