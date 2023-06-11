@@ -18,6 +18,11 @@
       <form method="post" action="{{ url_for('delete_brand', brand_id=brand.id) }}">
         <input type="submit" value="Delete">
       </form>
+
+      <form method="post" action="{{ url_for('geocode_addresses', brand_id=brand.id) }}">
+        <input type="submit" value="Geocode Addresses">
+      </form>
+      
     </div>  
 
     <div>
@@ -32,6 +37,14 @@
 
   
 
-  <button>This Button will take all addresses under a brand convert them to a CSV and then download them. However, the lat/lon will not appear on the page; it is only for downloading purposes.</button>
+
+ 
+  
+  
+
+  
+  
+  
+
 </body>
 </html>

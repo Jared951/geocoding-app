@@ -1,8 +1,12 @@
-from flask import Flask, render_template, request, flash, session, redirect, url_for
+import csv
+import io
+from flask import Flask, render_template, request, flash, redirect, url_for, make_response
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from model import connect_to_db, db, User, Brand, Address
-from crud import create_brand, create_user, create_address, remove_brand, update_address
+from crud import create_brand, create_user, create_address, remove_brand
+from geocoding import geocode_address
 from jinja2 import StrictUndefined
+
 
 app = Flask(__name__)
 app.secret_key = "secret key"
@@ -69,14 +73,13 @@ def add_brand():
 @login_required
 def view_all():
     user = current_user
-    user_brands = Brand.query.filter_by(user_id=user.id).all()
+    user_brands = Brand.query.filter_by(user_id=user.id).all() #type: ignore
 
     for brand in user_brands:
         brand.addresses = Address.query.filter_by(brand_id=brand.id).all()
 
     return render_template("view_all.html", brands=user_brands)
-
-    
+ 
 # Route for creating brand and addresses
 @app.route("/add_brand", methods=["GET", "POST"])
 @login_required
@@ -85,7 +88,7 @@ def add_brand_and_addresses():
         brand_name = request.form.get("brand_name")
         addresses = request.form.getlist("address")
 
-        user_id = current_user.id
+        user_id = current_user.id #type: ignore
         brand = create_brand(brand_name=brand_name, user_id=user_id)
 
         for address in addresses:
@@ -105,39 +108,94 @@ def delete_brand(brand_id):
 
     return redirect(url_for("view_all"))
 
+############################ GEO CODE ################################
+
+# @app.route("/geocode_addresses/<int:brand_id>", methods=["POST"])
+# @login_required
+# def geocode_addresses(brand_id):
+#     brand = Brand.query.get(brand_id)
+#     if brand:
+#         addresses = Address.query.filter_by(brand_id=brand.id).all()
+#         for address in addresses:
+#             geocoordinates = geocode_address(address.address_name)
+#             if geocoordinates:
+#                 address.latitude = geocoordinates[0]
+#                 address.longitude = geocoordinates[1]
+#                 db.session.commit()
+#         flash("Addresses geocoded successfully!")
+#     else:
+#         flash("Brand not found.")
+
+    
+
+#     return redirect(url_for("view_all"))
+
+@app.route("/download_geocoordinates/<int:brand_id>", methods=["GET"])
+@login_required
+def download_geocoordinates(brand_id):
+    brand = Brand.query.get(brand_id)
+    if brand:
+        addresses = Address.query.filter_by(brand_id=brand.id).all()
+        geocoordinates = []
+        for address in addresses:
+            coordinates = geocode_address(address.address_name)
+            if coordinates:
+                address.latitude = coordinates[0]
+                address.longitude = coordinates[1]
+                geocoordinates.append(coordinates)
+
+        db.session.commit()
+
+        # Create a CSV file
+        csv_data = [["Latitude", "Longitude"]] + geocoordinates
+        csv_file = "geocoordinates.csv"
+
+        # Prepare the CSV file for download
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerows(csv_data)
+
+        response = make_response(output.getvalue())
+        response.headers["Content-Disposition"] = f"attachment; filename={csv_file}"
+        response.headers["Content-Type"] = "text/csv"
+
+        flash("Addresses geocoded successfully!")
+
+        return response
+    else:
+        flash("Brand not found.")
+
+    return redirect(url_for("view_all"))
+
+
+
+
+
+@app.route("/geocode_addresses/<int:brand_id>", methods=["POST"])
+@login_required
+def geocode_addresses(brand_id):
+    brand = Brand.query.get(brand_id)
+    if brand:
+        addresses = Address.query.filter_by(brand_id=brand.id).all()
+        for address in addresses:
+            geocoordinates = geocode_address(address.address_name)
+            if geocoordinates:
+                address.latitude = geocoordinates[0]
+                address.longitude = geocoordinates[1]
+                db.session.commit()
+        flash("Addresses geocoded successfully!")
+    else:
+        flash("Brand not found.")
+
+    return redirect(url_for("download_geocoordinates", brand_id=brand_id))
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
     connect_to_db(app)
     app.run(debug=True)
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-Add_brand.html
-    Message will flash when brand is successfully added to view_all
-
-View_all.html
-    Next to each address update button that allows the user to change the address
-    Button next address that uses geopy script to convert addresses into latitude/longitude csv file
-
-1. Get Login working
-2. get link to take you to add_brand.html
-3. get link to take you to view_all.html
-4. links between each page
-5. add brands to psql
-6. have brands appear on view_all.html
-7. delete brands next to each
-
-
-8. List to show Chalon 
-9. Update functionality to satisfy requirement
-10. Geocoding 
-"""
