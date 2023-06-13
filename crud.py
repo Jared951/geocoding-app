@@ -32,12 +32,10 @@ def remove_brand(brand_id):
         return True
     return False
 
-################## GEO CODE ##############################
-
 def create_geocode(brand_id, address_name):
     geocoordinating = geocode_address(address_name)
-    latitude = geocoordinating[0] #type: ignore
-    longitude = geocoordinating[1] #type: ignore
+    latitude = geocoordinating[0] 
+    longitude = geocoordinating[1] 
 
     address = Address(address_name=address_name, brand_id=brand_id, latitude=latitude, longitude=longitude)
     db.session.add(address)

@@ -8,43 +8,48 @@
     <title>Profile</title>
 </head>
 <body>
-  <h1>View All Brands and Addresses</h1>
-  <a href="{{ url_for('logout') }}">Logout</a>
-  <a href="{{ url_for('add_brand') }}">Add Brand</a>
+  
+  <h1>Geocoding-App</h1>
+  <h2>View All Brands and Addresses</h2>
+
+  <div class="routes">
+    <a class="button" href="{{ url_for('add_brand') }}">Add Brand</a>
+    <a class="button" href="{{ url_for('logout') }}">Logout</a>
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
   {% for brand in brands %}
-    <div>
-      <h3>{{ brand.brand_name }}</h3>
-      <form method="post" action="{{ url_for('delete_brand', brand_id=brand.id) }}">
-        <input type="submit" value="Delete">
-      </form>
+    <div class="view-all">
 
-      <form method="post" action="{{ url_for('geocode_addresses', brand_id=brand.id) }}">
-        <input type="submit" value="Geocode Addresses">
-      </form>
+      <h2>{{ brand.brand_name }}</h2>
       
-    </div>  
-
-    <div>
       <h4>Addresses:</h4>
-      <ul>
-        {% for address in brand.addresses %}
-          <li>{{ address.address_name }}</li>
-        {% endfor %}
-      </ul>
+
+        <ul>
+          {% for address in brand.addresses %}
+            <li>{{ address.address_name }}</li>
+          {% endfor %}
+        </ul>
+
+        <form method="post" action="{{ url_for('delete_brand', brand_id=brand.id) }}">
+          <input type="submit" value="Delete">
+        </form>
+
+        <form method="post" action="{{ url_for('geocode_addresses', brand_id=brand.id) }}">
+          <input type="submit" value="Geocode Addresses">
+        </form>
+
     </div>
   {% endfor %}
-
-  
-
-
- 
-  
-  
-
-  
-  
-  
 
 </body>
 </html>

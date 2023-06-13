@@ -2,17 +2,14 @@ import os
 import model
 from flask import Flask
 
-# drop and recreate db
 os.system("dropdb -U jared seed-database")
 os.system("createdb -U jared seed-database")
 
 # You need a Flask app
 app = Flask(__name__)
 
-# You have to connect the Flask app to the SQLAlchemy db instance
 model.connect_to_db(app)
 
-# with Flask SQLAlchemy, you need app.app_context
 with app.app_context():
     model.db.create_all()
 

@@ -31,7 +31,6 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
         user = create_user(email, password)
-        flash("User successfully created")
         return redirect(url_for("home"))
     else:
         return render_template("home")
@@ -44,13 +43,9 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if user and user.password == password:
-        # Login successful
         login_user(user)
-        flash("Logged in successfully")
         return redirect(url_for("home"))
     else:
-        # Invalid 
-        flash("Invalid email or password")
         return redirect(url_for("login"))
 
 # Logout route
@@ -58,7 +53,6 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash("You have been logged out")
     return redirect(url_for("home"))
 
 # Route for adding a brand
@@ -67,13 +61,12 @@ def logout():
 def add_brand():
     return render_template("add_brand.html")
 
-
 # Route for viewing all brands 
 @app.route('/view_all')
 @login_required
 def view_all():
     user = current_user
-    user_brands = Brand.query.filter_by(user_id=user.id).all() #type: ignore
+    user_brands = Brand.query.filter_by(user_id=user.id).all()
 
     for brand in user_brands:
         brand.addresses = Address.query.filter_by(brand_id=brand.id).all()
@@ -88,7 +81,7 @@ def add_brand_and_addresses():
         brand_name = request.form.get("brand_name")
         addresses = request.form.getlist("address")
 
-        user_id = current_user.id #type: ignore
+        user_id = current_user.id
         brand = create_brand(brand_name=brand_name, user_id=user_id)
 
         for address in addresses:
@@ -108,28 +101,7 @@ def delete_brand(brand_id):
 
     return redirect(url_for("view_all"))
 
-############################ GEO CODE ################################
-
-# @app.route("/geocode_addresses/<int:brand_id>", methods=["POST"])
-# @login_required
-# def geocode_addresses(brand_id):
-#     brand = Brand.query.get(brand_id)
-#     if brand:
-#         addresses = Address.query.filter_by(brand_id=brand.id).all()
-#         for address in addresses:
-#             geocoordinates = geocode_address(address.address_name)
-#             if geocoordinates:
-#                 address.latitude = geocoordinates[0]
-#                 address.longitude = geocoordinates[1]
-#                 db.session.commit()
-#         flash("Addresses geocoded successfully!")
-#     else:
-#         flash("Brand not found.")
-
-    
-
-#     return redirect(url_for("view_all"))
-
+# Route to download geocoordinates
 @app.route("/download_geocoordinates/<int:brand_id>", methods=["GET"])
 @login_required
 def download_geocoordinates(brand_id):
@@ -159,18 +131,13 @@ def download_geocoordinates(brand_id):
         response.headers["Content-Disposition"] = f"attachment; filename={csv_file}"
         response.headers["Content-Type"] = "text/csv"
 
-        flash("Addresses geocoded successfully!")
-
         return response
     else:
         flash("Brand not found.")
 
     return redirect(url_for("view_all"))
 
-
-
-
-
+# Route to geocode addresses
 @app.route("/geocode_addresses/<int:brand_id>", methods=["POST"])
 @login_required
 def geocode_addresses(brand_id):
@@ -185,16 +152,9 @@ def geocode_addresses(brand_id):
                 db.session.commit()
         flash("Addresses geocoded successfully!")
     else:
-        flash("Brand not found.")
+        flash("Please Retry")
 
     return redirect(url_for("download_geocoordinates", brand_id=brand_id))
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     connect_to_db(app)

@@ -28,7 +28,6 @@ class User(db.Model, UserMixin):
         return self.password == password
 
 
-
 # Brand model for creating the 'brands' table
 class Brand(db.Model):
     # Set the table name
@@ -46,8 +45,6 @@ class Brand(db.Model):
     def __init__(self, brand_name, user_id):
         self.brand_name = brand_name
         self.user_id = user_id
-
-
 
 
 # Address model for creating the 'addresses' table
@@ -70,7 +67,6 @@ class Address(db.Model):
         self.brand_id = brand_id
 
 
-
 # Function to connect the app to the database
 def connect_to_db(app):
     # Set the database URI from environment variable
@@ -84,13 +80,10 @@ def connect_to_db(app):
     db.init_app(app)
 
 
-
 if __name__ == "__main__":
     from flask import Flask
-
     # Create a Flask app
     app = Flask(__name__)
-
     # Connect the app to the database
     connect_to_db(app)
     print("Connected to db...")

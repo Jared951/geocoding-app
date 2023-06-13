@@ -8,23 +8,38 @@
     <title>Add Brand</title>
 </head>
 <body>
-    <h1>Add Brand and Address</h1>
-    <a href="{{ url_for('logout') }}">Logout</a>
-    <a href="{{ url_for('view_all') }}">View All</a>
+  
+  <h1>Geocoding-App</h1>
+    <h2 class="add-brand-title">Add Brands and Address</h2>
 
-    <form method="post" action="{{ url_for('add_brand_and_addresses') }}">
-      <label for="brand_name">Brand Name:</label>
-      <input type="text" id="brand_name" name="brand_name" required><br><br>
-    
-      <label for="addresses">Addresses:</label>
-      <input type="text" id="addresses" name="address" required><br>
-      <input type="text" id="addresses" name="address" required><br>
-      <input type="text" id="addresses" name="address" required><br>
-    
-      <input type="submit" value="Add Brand and Addresses">
-    </form>
+    <div class="routes">
+      <a class="button" href="{{ url_for('view_all') }}">View All</a>
+      <a class="button" href="{{ url_for('logout') }}">Logout</a>
+    </div>
 
-    <h1>Flash will appear when a brand or address is added</h1>
-    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="box2">
+      <form method="post" action="{{ url_for('add_brand_and_addresses') }}">
+        <label for="brand_name">Brand Name:</label>
+        <input type="text" id="brand_name" name="brand_name" required><br><br>
+      
+        <label for="addresses">Addresses:</label>
+        <input type="text" id="addresses" name="address" required><br>
+        <input type="text" id="addresses" name="address" required><br>
+        <input type="text" id="addresses" name="address" required><br>
+      
+        <input type="submit" value="Add Brand and Addresses">
+      </form>
+    </div>
+
   </body>
 </html>
