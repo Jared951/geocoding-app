@@ -57,7 +57,6 @@ The Geocoding App is a web application that allows users to manage brands and th
 
 1. To delete a brand and all its associated addresses, locate the brand you want to delete on the home page.
 2. Click the "Delete" button next to the brand.
-3. A confirmation prompt will appear asking you to confirm the deletion. Click "OK" to proceed or "Cancel" to cancel the deletion.
 
 ![view-all-page](screenshots/View_all.png)
 
