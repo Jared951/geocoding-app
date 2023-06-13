@@ -14,16 +14,9 @@ The Geocoding App is a web application that allows users to manage brands and th
 
 - Python
 - Flask web framework
-- SQLAlchemy 
+- PostgreSQL
 - HTML/CSS for front-end
 - Geopy for geocoding functionality
-
-## Prerequisites
-
-- Python 3.7 or higher
-- Flask
-- SQLAlchemy
-- Geopy
 
 ## Instructions
 
