@@ -65,8 +65,7 @@ The Geocoding App is a web application that allows users to manage brands and th
 
 1. To geocode the addresses associated with a brand, locate the brand on the home page.
 2. Click the "Geocode Addresses" button next to the brand.
-3. The app will attempt to geocode each address using the geopy library and update the latitude and longitude coordinates.
-4. Once the geocoding process is complete, the updated addresses will be displayed on the home page.
+3. The app will attempt to geocode each address using the geopy library and send the latitude and longitude coordinates to a CSV file.
 
 ![geocoded-addresses](screenshots/geocoded_addresses.png)
 
